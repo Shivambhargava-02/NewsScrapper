@@ -56,4 +56,7 @@ def get_news(query, api_key, page_size=10):
 
     articles = data.get("articles", [])
 
+    if not articles:
+        return [], "No articles found"
+
     return articles, "NewsAPI"
