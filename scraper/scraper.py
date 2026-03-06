@@ -21,7 +21,7 @@ def fetch_bbc_india_news():
         items.append(
             {
                 "title": title,
-                "link": link,
+                "url": link,
                 "published": published,
                 "description": summary_short,
                 "source": "BBC News"
