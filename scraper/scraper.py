@@ -23,7 +23,7 @@ def fetch_bbc_india_news():
                 "title": title,
                 "link": link,
                 "published": published,
-                "summary": summary_short,
+                "description": summary_short,
                 "source": "BBC News"
             }
         )
