@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import html as html_mod
 from scraper.scraper import fetch_bbc_india_news, dataframe_to_excel
+from scraper.scraper import get_news
 
 # ── Load .env if present ──────────────────────────────────────────────────────
 load_dotenv()
