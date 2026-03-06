@@ -56,3 +56,11 @@ def get_news(query, api_key, page_size=10):
     articles = data.get("articles", [])
 
     return articles, "NewsAPI"
+
+def get_news(query, api_key, page_size=10):
+    
+    articles = fetch_bbc_india_news(query)
+
+    source_label = "BBC India"
+
+    return articles, source_label
