@@ -1,8 +1,7 @@
 import streamlit as st
-<<<<<<< HEAD
+from dotenv import load_dotenv
 import os
 import html as html_mod
-from dotenv import load_dotenv
 from scraper.news_fetcher import get_news
 
 # ── Load .env if present ──────────────────────────────────────────────────────
@@ -443,7 +442,7 @@ else:
         <p>Type a topic in the search bar above or click a category button to get started.</p>
     </div>
     """, unsafe_allow_html=True)
-=======
+
 import pandas as pd
 from scraper import fetch_bbc_india_news, dataframe_to_excel
 
@@ -476,4 +475,4 @@ if st.button("Scrape Latest News"):
         )
 else:
     st.info("Click the button above to scrape the latest BBC India news.")
->>>>>>> 51cbd346f0cdf485a474ee917168ef89ce10b784
+
