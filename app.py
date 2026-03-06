@@ -405,7 +405,7 @@ if st.session_state["searched"]:
                     safe_source = html_mod.escape(art['source'])
                     safe_desc   = html_mod.escape(art['description'])
                     safe_date   = html_mod.escape(art['published'])
-                    safe_url    = art['url']  # URL must not be escaped
+                    safe_url    = art["url"]  # URL must not be escaped
 
                     # Build image HTML
                     img_html = ""
