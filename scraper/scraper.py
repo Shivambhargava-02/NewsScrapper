@@ -36,3 +36,23 @@ def dataframe_to_excel(df):
         df.to_excel(writer, index=False, sheet_name="News")
     buffer.seek(0)
     return buffer
+
+
+def get_news(query, api_key, page_size=10):
+
+    url = "https://newsapi.org/v2/everything"
+
+    params = {
+        "q": query,
+        "pageSize": page_size,
+        "apiKey": api_key,
+        "language": "en",
+        "sortBy": "publishedAt"
+    }
+
+    response = requests.get(url, params=params)
+    data = response.json()
+
+    articles = data.get("articles", [])
+
+    return articles, "NewsAPI"
