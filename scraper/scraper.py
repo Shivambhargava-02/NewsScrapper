@@ -24,6 +24,7 @@ def fetch_bbc_india_news():
                 "link": link,
                 "published": published,
                 "summary": summary_short,
+                "source": "BBC News"
             }
         )
     if not items:
