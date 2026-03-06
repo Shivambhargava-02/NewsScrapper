@@ -41,22 +41,11 @@ def dataframe_to_excel(df):
 
 def get_news(query, api_key, page_size=10):
 
-    url = "https://newsapi.org/v2/everything"
+    df = fetch_bbc_india_news()
 
-    params = {
-        "q": query,
-        "pageSize": page_size,
-        "apiKey": api_key,
-        "language": "en",
-        "sortBy": "publishedAt"
-    }
+    if df.empty:
+        return [], "BBC RSS"
 
-    response = requests.get(url, params=params)
-    data = response.json()
+    articles = df.to_dict(orient="records")
 
-    articles = data.get("articles", [])
-
-    if not articles:
-        return [], "No articles found"
-
-    return articles, "NewsAPI"
+    return articles[:page_size], "BBC RSS"
