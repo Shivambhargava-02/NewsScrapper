@@ -1,13 +1,6 @@
-<<<<<<< HEAD
-streamlit>=1.32.0
-requests>=2.31.0
-beautifulsoup4>=4.12.0
-python-dotenv>=1.0.0
-lxml>=5.1.0
-=======
 streamlit
-pandas
-feedparser
-openpyxl
 requests
->>>>>>> 51cbd346f0cdf485a474ee917168ef89ce10b784
+beautifulsoup4
+pandas
+lxml
+python-dotenv
