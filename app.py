@@ -2,7 +2,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 import html as html_mod
-from scraper.news_fetcher import get_news
+from scraper.scraper import fetch_bbc_india_news, dataframe_to_excel
 
 # ── Load .env if present ──────────────────────────────────────────────────────
 load_dotenv()
