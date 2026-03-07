@@ -40,13 +40,10 @@ def dataframe_to_excel(df):
 
 
 
-def get_news(query, api_key, page_size=10):
-
-    df = fetch_bbc_india_news()
-
-    if df.empty:
-        return [], "BBC RSS"
-
-    articles = df.to_dict(orient="records")
-
-    return articles[:page_size], "BBC RSS"
+def get_news(query, api_key=None, page_size=10):
+    """
+    Delegates to news_fetcher.get_news which properly searches
+    Google News RSS (or NewsAPI) for the given query/category.
+    """
+    from scraper.news_fetcher import get_news as _get_news
+    return _get_news(query, api_key=api_key, page_size=page_size)

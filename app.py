@@ -2,8 +2,15 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 import html as html_mod
+from bs4 import BeautifulSoup as _BS
 from scraper.scraper import fetch_bbc_india_news, dataframe_to_excel
 from scraper.scraper import get_news
+
+def _strip_html(text: str) -> str:
+    """Strip any HTML tags from a string and return plain text."""
+    if not text:
+        return ""
+    return _BS(text, "html.parser").get_text(separator=" ", strip=True)
 
 # ── Load .env if present ──────────────────────────────────────────────────────
 load_dotenv()
@@ -400,31 +407,26 @@ if st.session_state["searched"]:
                     break
                 art = articles[idx]
                 with col:
-                    # HTML-escape ALL text to prevent RSS HTML from breaking card layout
-                    safe_title  = html_mod.escape(art['title'])
-                    safe_source = html_mod.escape(art['source'])
-                    safe_desc   = html_mod.escape(art['description'])
-                    safe_date   = html_mod.escape(art['published'])
-                    safe_url    = art["url"]  # URL must not be escaped
+                    # Strip HTML tags from all fields
+                    title  = _strip_html(art.get('title', ''))  or 'No Title'
+                    source = _strip_html(art.get('source', '')) or 'Unknown'
+                    desc   = _strip_html(art.get('description', ''))
+                    date   = _strip_html(art.get('published', ''))
+                    url    = art.get('url', '#')
 
-                    # Build image HTML
-                    img_html = ""
-                    if art.get("image"):
-                        img_html = f'<img class="card-img" src="{art["image"]}" alt="article image" onerror="this.style.display=\'none\'"/>'
-
-                    card_html = f"""
-                    <a class="card-wrapper" href="{safe_url}" target="_blank" rel="noopener noreferrer">
-                      <div class="card">
-                        {img_html}
-                        <div class="card-source">{safe_source}</div>
-                        <div class="card-title">{safe_title}</div>
-                        <div class="card-date">🕐 {safe_date}</div>
-                        <div class="card-desc">{safe_desc}</div>
-                        <div class="open-hint">🔗 Click to open full article &nbsp;→</div>
-                      </div>
-                    </a>
-                    """
-                    st.markdown(card_html, unsafe_allow_html=True)
+                    # Source badge
+                    st.markdown(
+                        f'<span class="card-source">{html_mod.escape(source)}</span>',
+                        unsafe_allow_html=True,
+                    )
+                    # Headline as a clickable link (native Streamlit markdown — always works)
+                    st.markdown(f"#### [{title}]({url})")
+                    if date:
+                        st.caption(f"🕐 {date}")
+                    if desc:
+                        st.write(desc)
+                    st.markdown("<hr style='border-color:#1e2640;margin:0.5rem 0 1.2rem'>",
+                                unsafe_allow_html=True)
     else:
         st.markdown("""
         <div class="no-result">
@@ -444,36 +446,5 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-import pandas as pd
-from scraper import fetch_bbc_india_news, dataframe_to_excel
 
-st.set_page_config(page_title="News Scraper", page_icon="📰", layout="wide")
-
-st.title("News Scraper")
-st.write("Fetch latest headlines and summaries from BBC India and download them as CSV or Excel.")
-
-if st.button("Scrape Latest News"):
-    with st.spinner("Fetching news..."):
-        df = fetch_bbc_india_news()
-    if df.empty:
-        st.error("No news items found. Please try again later.")
-    else:
-        st.success(f"Fetched {len(df)} news articles.")
-        st.dataframe(df, use_container_width=True)
-        csv_data = df.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            "Download as CSV",
-            data=csv_data,
-            file_name="news_data.csv",
-            mime="text/csv"
-        )
-        excel_buffer = dataframe_to_excel(df)
-        st.download_button(
-            "Download as Excel",
-            data=excel_buffer.getvalue(),
-            file_name="news_data.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-else:
-    st.info("Click the button above to scrape the latest BBC India news.")
 

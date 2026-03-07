@@ -76,7 +76,19 @@ def fetch_rss_scrape(query: str, max_results: int = 20) -> list[dict]:
             raw_title = title_tag.get_text(strip=True) if title_tag else "No Title"
             title = raw_title.rsplit(" - ", 1)[0].strip() if " - " in raw_title else raw_title
 
-            link = link_tag.get_text(strip=True) if link_tag else "#"
+            # Google News RSS: <link> is often a NavigableString sibling, not a child with text
+            link = "#"
+            if link_tag:
+                link = link_tag.get_text(strip=True)
+            if not link or link == "#":
+                # Try next sibling text node (lxml-xml quirk)
+                from bs4 import NavigableString
+                for sib in item.children:
+                    if isinstance(sib, NavigableString):
+                        stripped = str(sib).strip()
+                        if stripped.startswith("http"):
+                            link = stripped
+                            break
             pub  = _format_date(pub_tag.get_text(strip=True)) if pub_tag else "Unknown date"
 
             # Description in Google News RSS is wrapped in HTML — parse it properly
